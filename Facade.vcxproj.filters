@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Wall">
+      <UniqueIdentifier>{17d8f185-7756-41d9-9fd0-16b26270ed1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GDIImage">
+      <UniqueIdentifier>{ef60e105-9605-4e3d-ad51-b98f97fb23e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Math">
+      <UniqueIdentifier>{cffe3e1d-5f2f-45bb-97b4-8e6173b6ecb6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Processings.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Wall\panel.h">
+      <Filter>Wall</Filter>
+    </ClInclude>
+    <ClInclude Include="Wall\panelTypeEnum.h">
+      <Filter>Wall</Filter>
+    </ClInclude>
+    <ClInclude Include="Wall\Wall.h">
+      <Filter>Wall</Filter>
+    </ClInclude>
+    <ClInclude Include="GDIImage\cImageFile.h">
+      <Filter>GDIImage</Filter>
+    </ClInclude>
+    <ClInclude Include="GDIImage\cImages.h">
+      <Filter>GDIImage</Filter>
+    </ClInclude>
+    <ClInclude Include="GDIImage\tImage.h">
+      <Filter>GDIImage</Filter>
+    </ClInclude>
+    <ClInclude Include="cInformationFile.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\c2DPoint.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\c3DPoint.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\cCartesian.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\t2DPoint.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\t3DPoint.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Wall\cRow.h">
+      <Filter>Wall</Filter>
+    </ClInclude>
+    <ClInclude Include="cRhinoScriptFile.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Wall\cHole.h">
+      <Filter>Wall</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Facade.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Processings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Wall\panel.cpp">
+      <Filter>Wall</Filter>
+    </ClCompile>
+    <ClCompile Include="Wall\Wall.cpp">
+      <Filter>Wall</Filter>
+    </ClCompile>
+    <ClCompile Include="GDIImage\cImageFile.cpp">
+      <Filter>GDIImage</Filter>
+    </ClCompile>
+    <ClCompile Include="cInformationFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\cCartesian.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Wall\cRow.cpp">
+      <Filter>Wall</Filter>
+    </ClCompile>
+    <ClCompile Include="cRhinoScriptFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Wall\cHole.cpp">
+      <Filter>Wall</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
