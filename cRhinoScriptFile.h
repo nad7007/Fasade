@@ -9,22 +9,22 @@ class cRhinoScriptFile
 //////////////////////////////////////////////////////////////////////////////////
 public:
 		cRhinoScriptFile();
-		cRhinoScriptFile(const TCHAR* szFullFilePath);
+		cRhinoScriptFile(const std::string& szFullFilePath);
 		virtual ~cRhinoScriptFile();
 
 //////////////////////////////////////////////////////////////////////////////////
 public:
 
-		void	SetPath(LPCTSTR szPath);
-		const TCHAR* GetFilePath() const {
+		void	SetPath(const std::string& szPath);
+		const std::string& GetFilePath() const {
 			return m_strFileName;
 		}
 
-		const TCHAR* GetFileShortName() const {
+		/*const TCHAR* GetFileShortName() const {
 			int iInd = m_strFileName.ReverseFind('\\'); 
 			return (iInd  > -1) ? m_strFileName.Right(m_strFileName.GetLength() - iInd -1 ): m_strFileName;
 		}
-
+		*/
 		bool	IsReadyToWrite(bool bDeleteOldFile = true ){ 
 			if( m_bCanNotWrite )
 				ResetFile( bDeleteOldFile);
@@ -37,7 +37,7 @@ public:
 //////////////////////////////////////////////////////////////////////////////////
 protected:
 
-		CString m_strFileName;
+		std::string m_strFileName;
 		bool m_bCanNotWrite;
 		void ResetFile(bool bDeleteOldFile);
 

@@ -16,7 +16,7 @@ cRhinoScriptFile::cRhinoScriptFile()
 
 
 //////////////////////////////////////////////////////////////////////////////////
-cRhinoScriptFile::cRhinoScriptFile(const TCHAR* szFullFilePath)
+cRhinoScriptFile::cRhinoScriptFile(const std::string& szFullFilePath)
 	: m_file(nullptr)
 	, m_bCanNotWrite(true)
 	, m_strFileName(szFullFilePath)
@@ -39,7 +39,7 @@ void cRhinoScriptFile::ResetFile(bool bDeleteOldFile)
 	if ( bDeleteOldFile )
 	{
 		// delete old LOG file... ;-)
-		if(_tfopen_s(&m_file, m_strFileName, _T("wt")) || !m_file)
+		if(fopen_s(&m_file, m_strFileName.c_str(), ("wt")) || !m_file)
 		{
 			m_bCanNotWrite = true;
 			return;
@@ -50,9 +50,9 @@ void cRhinoScriptFile::ResetFile(bool bDeleteOldFile)
 	}
 	else
 	{
-		if(_tfopen_s(&m_file, m_strFileName, _T("at")) || !m_file) // if the file doesnot exist or the directory is read only
+		if(fopen_s(&m_file, m_strFileName.c_str(), ("at")) || !m_file) // if the file doesnot exist or the directory is read only
 		{
-			if(_tfopen_s(&m_file, m_strFileName, _T("wt")) || !m_file) // the directory is readonly
+			if(fopen_s(&m_file, m_strFileName.c_str(), ("wt")) || !m_file) // the directory is readonly
 			{
 				m_bCanNotWrite = true;
 				return;
@@ -65,9 +65,9 @@ void cRhinoScriptFile::ResetFile(bool bDeleteOldFile)
 }
 
 //////////////////////////////////////////////////////////////////////////////////
-void cRhinoScriptFile::SetPath( LPCTSTR szPath )
+void cRhinoScriptFile::SetPath( const std::string& szPath )
 {
-	if( m_strFileName.IsEmpty() || m_strFileName != szPath )
+	if( m_strFileName.empty() || m_strFileName != szPath )
 	{
 		m_bCanNotWrite = true;
 		m_strFileName = szPath;

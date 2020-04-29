@@ -1,55 +1,71 @@
 #include "stdafx.h"
 #include <iostream>
 #include <fstream>
-
+#include <filesystem>
+#include "Errors.h"
 #include "Wall.h"
 #include "cInformationFile.h"
 #include "panel.h"
 #include "cRhinoScriptFile.h"
 
+using namespace std;
+using namespace std::filesystem;
+
 bool cColorCodding::InitFromFile(const TCHAR* IniFile)
 {
 	cInformationFile File(IniFile);
 	if (!File.IsReadyToRead())
+	{
 		return false;
+	}
 
 	int tmpArr[3];
-	if( ReadArray(File, _T("COLOR_CODDING"), _T("BACKGROUND"), tmpArr, 3) != 3)
+	if (ReadArray(File, _T("COLOR_CODDING"), _T("BACKGROUND"), tmpArr, 3) != 3)
+	{
+		FACADE_ERRORS::SetErrorCode(103);
 		return false;
+	}
 	for (int i = 0; i < 3; ++i)
 		m_Background.m_arr[i] = char(tmpArr[i]);
 	
 	return true;
 }
 
-bool cColorCodding::SaveToIniFile(const TCHAR* IniFile)
+bool cColorCodding::SaveToIniFile(const TCHAR* FileName)
 {
-	cInformationFile File(IniFile);
-	if (!File.IsReadyToWrite())
+	cInformationFile IniFile(FileName);
+	if (!IniFile.IsReadyToWrite())
 		return false;
 
 	int tmpArr[3];
 	for (int i = 0; i < 3; ++i)
 		tmpArr[i] = m_Background.m_arr[i];
-	if (WriteArray(File, _T("COLOR_CODDING"), _T("BACKGROUND"), tmpArr, 3) == false)
+	if (WriteArray(IniFile, _T("COLOR_CODDING"), _T("BACKGROUND"), tmpArr, 3) == false)
+		return false;
+	for (int i = 0; i < 3; ++i)
+		tmpArr[i] = m_HoleEdge.m_arr[i];
+	if (WriteArray(IniFile, _T("COLOR_CODDING"), _T("HOLE_EDGE"), tmpArr, 3) == false)
 		return false;
 
 	return true;
 }
 
-bool	cWall::ReadFullCoddedInfo(const TCHAR* IniTxtFile)
+bool	cWall::ReadFullCoddedInfo( std::string& IniTxtFile)
 {
-	m_IniFileName.Empty();
+	m_IniFileName.clear();
 	stColor RasterColor;
 	c3DPointI OrientV1, OrientV2;
 	c3DPointD RasterPt1, RasterPt2;
 	if (!ReadIniFile(IniTxtFile, OrientV1, OrientV2, RasterColor, RasterPt1, RasterPt2))
+	{
+		FACADE_ERRORS::SetErrorCode(103);
 		return false;
+	}
+
 	m_IniFileName = IniTxtFile;
 
 	Set3DCSRotation(OrientV1, OrientV2);
 
-	
 	cRGBImage		Image;
 	if (!LoadFromCoddedBitmap(Image, RasterColor,	 RasterPt1,  RasterPt2))
 		return false;
@@ -62,15 +78,19 @@ bool	cWall::ReadFullCoddedInfo(const TCHAR* IniTxtFile)
 	return true;
 }
 
-bool	cWall::ReadPartialCoddedInfo(const TCHAR* IniTxtFile, const stColor& RasterColor, const c3DPointD& RasterPt1, const c3DPointD& RasterPt2, bool& bToFindNext)
+bool	cWall::ReadPartialCoddedInfo(const std::string& IniTxtFile, const stColor& RasterColor, const c3DPointD& RasterPt1, const c3DPointD& RasterPt2, bool& bToFindNext)
 {
 	m_pPrev = m_pNext = nullptr;
 	bToFindNext = false;
-	m_IniFileName.Empty();
+	m_IniFileName.clear();
 
 	c3DPointI OrientV1, OrientV2;
 	if (!ReadIniFile(IniTxtFile, OrientV1, OrientV2))
+	{
+		FACADE_ERRORS::SetErrorCode(103);
 		return false;
+	}
+
 	Set3DCSRotation(OrientV1, OrientV2);
 
 	m_IniFileName = IniTxtFile;
@@ -84,12 +104,12 @@ bool	cWall::ReadPartialCoddedInfo(const TCHAR* IniTxtFile, const stColor& Raster
 	return true;
 }
 
-void	cWall::FindNextWall(CString* IniFileNames, int iNumFiles, std::vector< cWall*>& Walls)
+void	cWall::FindNextWall( std::vector<std::string>& IniFileNames, int iNumFiles, std::vector< cWall*>& Walls)
 {
 	m_pNext = nullptr;
 	for (int i = 0; i < iNumFiles; i++)
 	{
-		if (!IniFileNames[i].IsEmpty())
+		if (!IniFileNames[i].empty())
 		{
 			cWall* tmpWall = new cWall;
 			bool bToFindNext = false;
@@ -99,7 +119,7 @@ void	cWall::FindNextWall(CString* IniFileNames, int iNumFiles, std::vector< cWal
 				continue;
 			}
 
-			IniFileNames[i].Empty();
+			IniFileNames[i].clear();
 			tmpWall->SetPreviousWall(this);
 			m_pNext = tmpWall;
 			Walls.push_back(tmpWall);
@@ -136,24 +156,22 @@ void		cWall::FindNextWall(unsigned iCurrentWall, std::vector< cWall*>& Walls)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-CString	cWall::GetBitmapName()const
+std::string	cWall::GetBitmapName()const
 {
-	CString txtFile = m_IniFileName;
-	CString Ext = txtFile.Right(3);
-
-	txtFile.Replace(Ext, _T("dib"));
-	//txtFile.Replace(Ext, _T("png"));
-	return txtFile;
+	path txtFile(m_IniFileName);
+	//txtFile.replace_extension("dib");
+	txtFile.replace_extension("png");
+	return txtFile.string();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-CString	cWall::GetRinoScriptName()const
+std::string	cWall::GetRinoScriptName(std::string& szOutputDir)const
 {
-	CString txtFile = m_IniFileName;
-	CString Ext = txtFile.Right(4);
-
-	txtFile.Replace(Ext, _T("_res.txt"));
-	return txtFile;
+	path txtFile(szOutputDir);
+	path tmpFile(m_IniFileName);
+	txtFile += tmpFile.filename();
+	txtFile.replace_filename(txtFile.stem().string() + "_res.txt");
+	return txtFile.string();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -161,16 +179,17 @@ bool cWall::LoadFromCoddedBitmap( cRGBImage& Image, const stColor& RasterColor
 																	, const c3DPointD& RasterPt1, const c3DPointD& RasterPt2
 																	, c2DPointI* pMinPixPt, c2DPointI* pMaxPixPt)
 {
-	if (m_IniFileName.IsEmpty())
+	if (m_IniFileName.empty())
 	{
 		ASSERT(false);
 		return false;
 	}
 
 	//need StartGDIP();
-	if(!cImageFile::Read(&Image, GetBitmapName()) || Image.GetImageSize() <= 0)
+	if(!cImageFile::Read(&Image, GetBitmapName().c_str() ) || Image.GetImageSize() <= 0)
 	{
 		_ASSERT(false);
+		FACADE_ERRORS::SetErrorCode(104);
 		return false;
 	}
 	
@@ -295,7 +314,7 @@ void cWall::Set3DCSTranslationAndScale(const c3DPointD& RasterPt1, const c3DPoin
 	m_CS.t2 = (Translation.z + Translation2.z)* 0.5;
 }
 
-bool	cWall::ReadIniFile(const TCHAR* TXTFile, c3DPointI& V1, c3DPointI& V2)//only vectors
+bool	cWall::ReadIniFile(const std::string& TXTFile, c3DPointI& V1, c3DPointI& V2)//only vectors
 {
 	std::ifstream In;
 	In.open(TXTFile);
@@ -314,13 +333,14 @@ bool	cWall::ReadIniFile(const TCHAR* TXTFile, c3DPointI& V1, c3DPointI& V2)//onl
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-bool cWall::ReadIniFile(const TCHAR* TXTFile, c3DPointI& V1, c3DPointI& V2, stColor& RasterColor, c3DPointD& RasterPt1, c3DPointD& RasterPt2)
+bool cWall::ReadIniFile(const std::string& TXTFile, c3DPointI& V1, c3DPointI& V2, stColor& RasterColor, c3DPointD& RasterPt1, c3DPointD& RasterPt2)
 {
 	std::ifstream In;
 	In.open(TXTFile);
 	if (!In.is_open())
 	{
-		_ASSERT(false);
+		_ASSERT(false); 
+		FACADE_ERRORS::SetErrorCode(102);
 		return false;
 	}
 	char ch;
@@ -639,7 +659,7 @@ bool cWall::FindOwnRasterLine(const cRGBImage& Image, const stColor& PrevRasterC
 bool cWall::FindEdge(const stColor& EdgeColor)
 {
 	cRGBImage		Image;
-	if (!cImageFile::Read(&Image, GetBitmapName()) || Image.GetImageSize() <= 0)
+	if (!cImageFile::Read(&Image, GetBitmapName().c_str()) || Image.GetImageSize() <= 0)
 	{
 		_ASSERT(false);
 		return false;
@@ -789,7 +809,7 @@ void	cWall::DetectRows( double dTolerance)
 
 	//need StartGDIP();
 	cRGBImage		Image;
-	if (!cImageFile::Read(&Image, GetBitmapName()) || Image.GetImageSize() <= 0)
+	if (!cImageFile::Read(&Image, GetBitmapName().c_str()) || Image.GetImageSize() <= 0)
 	{
 		_ASSERT(false);
 		return;
@@ -871,12 +891,16 @@ void	cWall::CalculatePanels(int iPanelsWidth, double dTolRemaining)
 	}
 }
 
-bool	cWall::ExportToRhinoScript(int iPanelsWidth)
+bool	cWall::ExportToRhinoScript(std::string& szOutputDir, int iPanelsWidth)
 {
-	CString	Fn = GetRinoScriptName();
+	std::string	Fn = GetRinoScriptName(szOutputDir);
 	cRhinoScriptFile Rfile(Fn);
 	if (!Rfile.IsReadyToWrite())
+	{
+		FACADE_ERRORS::SetErrorCode(105);
 		return false;
+	}
+
 	double dEdgeLength;
 	c3DPointI Edges[6];
 	for (int i = 0; i < m_Rows.size(); ++i)

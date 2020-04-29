@@ -4,7 +4,7 @@
 #include "cImageFile.h"
 
 ////////////////////////////////////////////////////////////////
-bool cImageFile::Read( cRGBImage* pImage, LPCTSTR szFileName ) 
+bool cImageFile::Read( cRGBImage* pImage, const char* szFileName ) 
 {
 	if( !pImage )
 		return false;
@@ -12,7 +12,7 @@ bool cImageFile::Read( cRGBImage* pImage, LPCTSTR szFileName )
 	pImage->Destroy();
 
 	USES_CONVERSION;
-	Gdiplus::Bitmap* pBitmap = Gdiplus::Bitmap::FromFile( CT2W(szFileName));
+	Gdiplus::Bitmap* pBitmap = Gdiplus::Bitmap::FromFile(CA2CT(szFileName));
 	if( pBitmap == NULL )
 		return false;
 

@@ -5,7 +5,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace FACADE_PROC
 {
-	void LoadWalls(CString* IniFileNames, unsigned iNumFiles, std::vector< cWall*>& Walls);
+	void LoadWalls(std::vector<std::string>& IniFileNames, unsigned iNumFiles, std::vector< cWall*>& Walls);
 	void CreateRows(std::vector< cWall*>& Walls, int iPanelHeight, int iPanelWidth, double dTolRemaining);
 	void CalculatePanels(std::vector< cWall*>& Walls, int iPanelWidth, double dTolRemaining);
 

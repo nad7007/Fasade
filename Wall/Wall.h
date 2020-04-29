@@ -44,14 +44,14 @@ public:
 
 public:
 
-	bool		ReadFullCoddedInfo(const TCHAR* IniTxtFile);
-	void		FindNextWall(CString* IniFileNames, int iNumFiles, std::vector< cWall*>& Walls);//recursion
+	bool		ReadFullCoddedInfo( std::string& IniTxtFile);
+	void		FindNextWall(std::vector<std::string>& IniFileNames, int iNumFiles, std::vector< cWall*>& Walls);//recursion
 	void		FindNextWall(unsigned iCurrentWall, std::vector< cWall*>& Walls);
 	void		CreateRows( int iMaxPanelHeight);//calculate number of rows and create them
 	void		DetectRows(double dTolRemaining);//detect length of each row
 	void		CorrectRowsLength(int iPanelsWidth);//correct row length by panel width if necessary;
 	void		CalculatePanels(int iPanelWidthd, double dTolRemaining);
-	bool		ExportToRhinoScript(int iPanelsWidth);
+	bool		ExportToRhinoScript( std::string& szOutputDir, int iPanelsWidth);
 	void		SetTopRowZero(double dTopZero, double dRemaning, int iMaxPanelHeight);
 	const cRow*		GetRow(unsigned ind) const;
 	bool		HasRow(unsigned ind) const {
@@ -63,21 +63,21 @@ public:
 protected:
 
 	void		DetectRowEdges(const cRGBImage& Image, unsigned iY, std::vector< Pixdata >& startRow);
-	bool		ReadPartialCoddedInfo(const TCHAR* IniTxtFile, const stColor& RasterColor, const c3DPointD& RasterPt1, const c3DPointD& RasterPt2, bool& bToFindNext);
+	bool		ReadPartialCoddedInfo(const std::string& IniTxtFile, const stColor& RasterColor, const c3DPointD& RasterPt1, const c3DPointD& RasterPt2, bool& bToFindNext);
 	void		SetPreviousWall(cWall* pWall)
 	{
 		ASSERT(m_pPrev == nullptr);
 		m_pPrev = pWall;
 	}
 
-	CString	GetBitmapName() const;
-	CString	GetRinoScriptName()const;
+	std::string	GetBitmapName() const;
+	std::string	GetRinoScriptName(std::string& szOutputDir)const;
 
 	bool		LoadFromCoddedBitmap(cRGBImage& Image, const stColor& RasterColor
 																, const c3DPointD& RasterPt1, const c3DPointD& RasterPt2
 																, c2DPointI* pMinPixPt = nullptr, c2DPointI* pMaxPixPt = nullptr );
-	bool		ReadIniFile(const TCHAR* TXTFile, c3DPointI& V1, c3DPointI& V2);//only vectors
-	bool		ReadIniFile(const TCHAR* TXTFile, c3DPointI& V1, c3DPointI& V2, stColor& RasterColor, c3DPointD& RasterPt1, c3DPointD& RasterPt2);//full description
+	bool		ReadIniFile(const std::string& TXTFile, c3DPointI& V1, c3DPointI& V2);//only vectors
+	bool		ReadIniFile( const std::string& TXTFile, c3DPointI& V1, c3DPointI& V2, stColor& RasterColor, c3DPointD& RasterPt1, c3DPointD& RasterPt2);//full description
 
 	void		Set3DCSRotation(const c3DPointI& OrientV1, const c3DPointI& OrientV2);
 	void		Set3DCSTranslationAndScale(const c3DPointD& RasterPt1, const c3DPointD& RasterPt2, const c2DPointI& PixPoint1, const c2DPointI& PixPoint2);
@@ -94,8 +94,8 @@ protected:
 
 private:
 	
+	std::string	m_IniFileName;
 	cCartesian	m_CS;//From Image 2D space to input 3D space
-	CString			m_IniFileName;
 	cWall*			m_pNext;
 	cWall*			m_pPrev;
 	stColor			m_RasterColor;

@@ -82,6 +82,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <IntDir>$(SolutionDir)$(Platform)\$(Configuration)\OBJ\</IntDir>
+    <OutDir>$(SolutionDir)</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -117,6 +118,7 @@
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>.;..;</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -155,6 +157,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>.;..;</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -167,6 +170,7 @@
   <ItemGroup>
     <ClInclude Include="cInformationFile.h" />
     <ClInclude Include="cRhinoScriptFile.h" />
+    <ClInclude Include="Errors.h" />
     <ClInclude Include="GDIImage\cImageFile.h" />
     <ClInclude Include="GDIImage\cImages.h" />
     <ClInclude Include="GDIImage\tImage.h" />
@@ -187,6 +191,7 @@
   <ItemGroup>
     <ClCompile Include="cInformationFile.cpp" />
     <ClCompile Include="cRhinoScriptFile.cpp" />
+    <ClCompile Include="Errors.cpp" />
     <ClCompile Include="Facade.cpp" />
     <ClCompile Include="GDIImage\cImageFile.cpp" />
     <ClCompile Include="Math\cCartesian.cpp" />

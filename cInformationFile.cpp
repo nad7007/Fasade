@@ -228,9 +228,9 @@ bool cInformationFile::SaveSetting( LPCTSTR section, LPCTSTR key, const unsigned
 //////////////////////////////////////////////////////////////////////////////////
 bool cInformationFile::GetSetting( LPCTSTR section, LPCTSTR key, TCHAR* setting, unsigned uMaxCharsCount )
 {
-	_ASSERT( uMaxCharsCount <= BUFF_SIZE );
-	TCHAR szResult[ BUFF_SIZE ];
-	if( GetPrivateProfileString( section, key, emptyStr, szResult, countof(szResult), m_strFileName ) )
+	_ASSERT(uMaxCharsCount <= BUFF_SIZE );
+	TCHAR szResult[BUFF_SIZE];
+	if( GetPrivateProfileString( section, key, emptyStr, szResult, BUFF_SIZE, m_strFileName ) )
 	{
 		_tcsncpy_s ( setting, BUFF_SIZE, szResult, min( BUFF_SIZE, uMaxCharsCount ) );
 		setting[ min( BUFF_SIZE, uMaxCharsCount ) - 1 ] = 0;

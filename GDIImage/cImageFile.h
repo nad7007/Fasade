@@ -9,7 +9,7 @@ class cImageFile
 ///////////////////////////////////////////////////////////////////////////
 public:
 	//! read rgb image from disk
-	static bool Read(cRGBImage *rgbBoard, LPCTSTR szFileName) ;
+	static bool Read(cRGBImage *rgbBoard, const char* szFileName) ;
 	
 	//! write rgb image to disk
 	static bool Write(const cRGBImage *rgbBoard, const TCHAR* szFileName) ;
