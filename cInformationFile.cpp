@@ -226,7 +226,7 @@ bool cInformationFile::SaveSetting( LPCTSTR section, LPCTSTR key, const unsigned
 }
 
 //////////////////////////////////////////////////////////////////////////////////
-bool cInformationFile::GetSetting( LPCTSTR section, LPCTSTR key, TCHAR* setting, unsigned uMaxCharsCount )
+bool cInformationFile::GetSetting( LPCTSTR section, LPCTSTR key, TCHAR* setting, unsigned uMaxCharsCount )const
 {
 	_ASSERT(uMaxCharsCount <= BUFF_SIZE );
 	TCHAR szResult[BUFF_SIZE];
@@ -244,7 +244,7 @@ bool cInformationFile::GetSetting( LPCTSTR section, LPCTSTR key, TCHAR* setting,
 }
 
 //////////////////////////////////////////////////////////////////////////////////
-bool cInformationFile::GetSetting( LPCTSTR section, LPCTSTR key, float &setting )
+bool cInformationFile::GetSetting( LPCTSTR section, LPCTSTR key, float &setting )const
 {
 	TCHAR szResult[ 200 ];
 
@@ -262,7 +262,7 @@ bool cInformationFile::GetSetting( LPCTSTR section, LPCTSTR key, float &setting 
 }
 
 //////////////////////////////////////////////////////////////////////////////////
-bool cInformationFile::GetSetting( LPCTSTR section, LPCTSTR key, double &setting )
+bool cInformationFile::GetSetting( LPCTSTR section, LPCTSTR key, double &setting )const
 {
 	TCHAR szResult[ 200 ];
 
@@ -280,7 +280,7 @@ bool cInformationFile::GetSetting( LPCTSTR section, LPCTSTR key, double &setting
 }
 
 //////////////////////////////////////////////////////////////////////////////////
-bool cInformationFile::GetSetting( LPCTSTR section, LPCTSTR key, int &setting )
+bool cInformationFile::GetSetting( LPCTSTR section, LPCTSTR key, int &setting )const
 {
 	TCHAR szResult[ 200 ];
 	if( GetPrivateProfileString( section, key, emptyStr, szResult,sizeof(szResult), m_strFileName ) )
@@ -296,7 +296,7 @@ bool cInformationFile::GetSetting( LPCTSTR section, LPCTSTR key, int &setting )
 }
 
 //////////////////////////////////////////////////////////////////////////////////
-bool cInformationFile::GetSetting( LPCTSTR section, LPCTSTR key, unsigned int &setting )
+bool cInformationFile::GetSetting( LPCTSTR section, LPCTSTR key, unsigned int &setting )const
 {
 	TCHAR szResult[ 200 ];
 

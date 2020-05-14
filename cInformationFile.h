@@ -29,14 +29,14 @@ public:
 		//BOOL	SaveSetting( LPCTSTR section, LPCTSTR key, const wchar_t* setting );
 
 		// restores	
-		bool	GetSetting( LPCTSTR section, LPCTSTR key, float &setting );
-		bool	GetSetting( LPCTSTR section, LPCTSTR key, double &setting );
-		bool	GetSetting( LPCTSTR section, LPCTSTR key, int &setting );
-		bool	GetSetting( LPCTSTR section, LPCTSTR key, unsigned int &setting );
+		bool	GetSetting( LPCTSTR section, LPCTSTR key, float &setting ) const;
+		bool	GetSetting( LPCTSTR section, LPCTSTR key, double &setting )const;
+		bool	GetSetting( LPCTSTR section, LPCTSTR key, int &setting )const;
+		bool	GetSetting( LPCTSTR section, LPCTSTR key, unsigned int &setting )const;
 		
 		//!ATTENTION: the following String settings are limitted to BUFF_SIZE symbols
 		//If you need more go to cpp and change the BUFF_SIZE constant.
-		bool	GetSetting( LPCTSTR section, LPCTSTR key, TCHAR* setting, unsigned uMaxCountChars );
+		bool	GetSetting( LPCTSTR section, LPCTSTR key, TCHAR* setting, unsigned uMaxCountChars ) const;
 		
 		// sets m_strFileName to \\Path\appname_log.txt
 		void	SetPath(LPCTSTR szPath);
@@ -63,7 +63,7 @@ protected:
 
 //////////////////////////////////////////////////////////////////////////////////
 private:
-		CString emptyStr;
+		mutable CString emptyStr;
 };
 //////////////////////////////////////////////////////////////////////////////////
 

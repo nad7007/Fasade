@@ -1,4 +1,7 @@
 #pragma once
+#include <fstream>
+
+class cInformationFile;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace FACADE_ERRORS
@@ -8,5 +11,5 @@ namespace FACADE_ERRORS
 	void SetErrorCode(unsigned uErrorCode);
 	unsigned GetErrorCode();
 	void SetLocalization(const std::string& LanguageName);
-	void DisplayErroMessage(const std::wstring& ErrorFile);
+	void DisplayErrorMessage(const cInformationFile& ErrorFile, std::wofstream& LogFile);
 };
