@@ -39,6 +39,14 @@ stColor PanelColours[] = {
 
 static int sCurrentColour = 0;
 
+int cPDFSize::m_sMaxB = 800;
+int cPDFSize::m_sMinB = 400;
+
+int cLDSize::m_sMaxB = 600;
+int cLDSize::m_sMinB = 300;
+int cLDSize::m_sMaxC = 340;
+int cLDSize::m_sMinC = 250;
+
 IfacePanel* IfacePanel::Create(PanelType type, double dX, double dY, double dH, double dL)
 {
 	IfacePanel *pNew = nullptr;

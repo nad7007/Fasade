@@ -189,7 +189,7 @@ bool cWall::LoadFromCoddedBitmap( cRGBImage& Image, const stColor& RasterColor
 	if(!cImageFile::Read(&Image, GetBitmapName().c_str() ) || Image.GetImageSize() <= 0)
 	{
 		_ASSERT(false);
-		FACADE_ERRORS::SetErrorCode(104);
+		FACADE_ERRORS::SetErrorCode(104, GetBitmapName().c_str());
 		return false;
 	}
 	
@@ -340,7 +340,7 @@ bool cWall::ReadIniFile(const std::string& TXTFile, c3DPointI& V1, c3DPointI& V2
 	if (!In.is_open())
 	{
 		_ASSERT(false); 
-		FACADE_ERRORS::SetErrorCode(102);
+		FACADE_ERRORS::SetErrorCode(102, TXTFile.c_str());
 		return false;
 	}
 	char ch;
@@ -897,7 +897,7 @@ bool	cWall::ExportToRhinoScript(std::string& szOutputDir, int iPanelsWidth)
 	cRhinoScriptFile Rfile(Fn);
 	if (!Rfile.IsReadyToWrite())
 	{
-		FACADE_ERRORS::SetErrorCode(105);
+		FACADE_ERRORS::SetErrorCode(105, Fn.c_str());
 		return false;
 	}
 

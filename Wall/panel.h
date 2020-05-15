@@ -4,12 +4,16 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 class cPDFSize//In MM by specification
 {
-	const static int m_sMaxB = 800;
-	const static int m_sMinB = 400;
+	static int m_sMaxB;
+	static int m_sMinB;
 	
 public:
-	cPDFSize()
-	{}
+
+	static void SetSize(int MaxB, int MinB)
+	{
+		m_sMaxB = MaxB;
+		m_sMinB = MinB;
+	}
 
 	static int GetMinLength() {
 		return m_sMinB;
@@ -22,13 +26,19 @@ public:
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 class cLDSize//In MM by specification
 {
-	const static int m_sMaxB = 600;
-	const static int m_sMinB = 300;
-	const static int m_sMaxC = 340;
-	const static int m_sMinC = 250;
+	static int m_sMaxB;
+	static int m_sMinB;
+	static int m_sMaxC;
+	static int m_sMinC;
 
 public:
-	cLDSize() {}
+		static void SetSize(int MaxB, int MinB, int MaxC, int MinC)
+	{
+		m_sMaxB = MaxB;
+		m_sMinB = MinB;
+		m_sMaxC = MaxC;
+		m_sMinC = MinC;
+	}
 
 	static int GetMinLongLength(int iPanelWidth)  {
 		return m_sMinB - iPanelWidth;
@@ -148,7 +158,6 @@ protected:
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 class cPDFPanel : public cPanel
 {
-	cPDFSize		m_Size;
 	HoleStatus	m_HoleStatus;
 
 public://Constructors & destructor
@@ -181,7 +190,6 @@ public://Constructors & destructor
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 class cLDPanel : public cPanel
 {
-		static cLDSize	m_Size;
 
 public://Constructors & destructor
 
