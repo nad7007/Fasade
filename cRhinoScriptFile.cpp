@@ -75,7 +75,7 @@ void cRhinoScriptFile::SetPath( const std::string& szPath )
 }
 
 //////////////////////////////////////////////////////////////////////////////////
-bool cRhinoScriptFile::WriteFlatPanel( const c3DPointI P[4])
+bool cRhinoScriptFile::WriteFlatPanel( const c3DPointI P[4], float fPanelWidth, float fPanelHeight, float fPanelThickness)
 {
 	if (m_bCanNotWrite)
 		return false;
@@ -87,10 +87,16 @@ bool cRhinoScriptFile::WriteFlatPanel( const c3DPointI P[4])
 		if(fwprintf(m_file, _T("%d,%d,%d "), P[i].x, P[i].y, P[i].z) <=0 )
 			return false;
 	}
-	return fwprintf(m_file, _T("_Enter\n") ) > 0;
+	if (fwprintf(m_file, _T("_Enter\n")) <= 0)
+		return false;
+	if (fwprintf(m_file, _T("_SelLast\n")) <= 0)
+		return false;
+	if (fwprintf(m_file, _T("SetObjectName FlatPanel_W%.2f_H%.2f_T%.2f\n"), fPanelWidth,  fPanelHeight, fPanelThickness) <= 0)
+		return false;
+	return true;
 }
 
-bool cRhinoScriptFile::WriteEdgePanel(const c3DPointI P[6], unsigned iPanelHeight)
+bool cRhinoScriptFile::WriteEdgePanel(const c3DPointI P[6], float fPanelWidthLeft, float fPanelWidthRight, float fPanelHeight, float fPanelThickness)
 {
 	if (m_bCanNotWrite)
 		return false;
@@ -105,6 +111,12 @@ bool cRhinoScriptFile::WriteEdgePanel(const c3DPointI P[6], unsigned iPanelHeigh
 	if (fwprintf(m_file, _T("%d,%d,%d\n"), P[0].x, P[0].y, P[0].z) <= 0)
 		return false;
 	if (fwprintf(m_file, _T("_Enter\n_SelLast\n_PlanarSrf\n_SelPrev\n_Delete\n_SelLast\n")) <= 0)
-			return false;
-	return  fwprintf(m_file, _T("_ExtrudeSrf BothSides=Yes Solid=Yes DeleteInput=Yes  %d\n"), iPanelHeight/2) > 0;
-}
+		return false;
+	if (fwprintf(m_file, _T("_ExtrudeSrf BothSides=Yes Solid=Yes DeleteInput=Yes  %d\n"), int(fPanelHeight / 2)) <= 0)
+		return false;
+	if (fwprintf(m_file, _T("_SelLast\n")) <= 0)
+		return false;
+	if (fwprintf(m_file, _T("SetObjectName EdgePanel_WL%.2f_WR%.2f_H%.2f_T%.2f\n"), fPanelWidthLeft, fPanelWidthRight, fPanelHeight, fPanelThickness) <= 0)
+		return false;
+	return true;
+} 

@@ -51,7 +51,7 @@ public:
 	void		DetectRows(double dTolRemaining);//detect length of each row
 	void		CorrectRowsLength(int iPanelsWidth);//correct row length by panel width if necessary;
 	void		CalculatePanels(int iPanelWidthd, double dTolRemaining);
-	bool		ExportToRhinoScript( std::string& szOutputDir, int iPanelsWidth);
+	bool		ExportToRhinoScript( std::string& szOutputDir, float fPanelThickness );
 	void		SetTopRowZero(double dTopZero, double dRemaning, int iMaxPanelHeight);
 	const cRow*		GetRow(unsigned ind) const;
 	bool		HasRow(unsigned ind) const {

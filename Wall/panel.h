@@ -130,7 +130,7 @@ public: //IfacePanel interface
 		red = m_Color.red; green = m_Color.green; blue =  m_Color.blue;
 	}
 	void			SetColor(unsigned char red, unsigned char green, unsigned char blue) override {
-		m_Color.red = red;  m_Color.green = green; m_Color.blue = blue;
+		m_Color.Set(red,green,blue);
 	}
 
 	bool			Compare(const IfacePanel* pOther) const override {

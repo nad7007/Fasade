@@ -22,6 +22,12 @@ struct stColor
 		struct { unsigned char red, green, blue; };
 		unsigned char m_arr[3];
 	};
+	bool m_bValid;
+	void Set(char R, char G, char B)
+	{
+		red = R; green = G; blue = B;
+		m_bValid = true;
+	}
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

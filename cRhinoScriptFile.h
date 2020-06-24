@@ -31,8 +31,8 @@ public:
 			return !m_bCanNotWrite;
 		}
 
-		bool WriteFlatPanel(const c3DPointI P[4]);
-		bool WriteEdgePanel(const c3DPointI P[6], unsigned iPanelHeight);
+		bool WriteFlatPanel(const c3DPointI P[4], float fPanelWidth, float fPanelHeight, float fPanelThickness);
+		bool WriteEdgePanel(const c3DPointI P[6], float fPanelWidthLeft, float fPanelWidthRight, float fPanelHeight, float fPanelThickness);
 
 //////////////////////////////////////////////////////////////////////////////////
 protected:

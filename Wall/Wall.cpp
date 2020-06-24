@@ -22,7 +22,6 @@ bool cColorCodding::InitFromFile(const TCHAR* IniFile)
 	int tmpArr[3];
 	if (ReadArray(File, _T("COLOR_CODDING"), _T("BACKGROUND"), tmpArr, 3) != 3)
 	{
-		FACADE_ERRORS::SetErrorCode(103);
 		return false;
 	}
 	for (int i = 0; i < 3; ++i)
@@ -58,7 +57,7 @@ bool	cWall::ReadFullCoddedInfo( std::string& IniTxtFile)
 	c3DPointD RasterPt1, RasterPt2;
 	if (!ReadIniFile(IniTxtFile, OrientV1, OrientV2, RasterColor, RasterPt1, RasterPt2))
 	{
-		FACADE_ERRORS::SetErrorCode(103);
+		FACADE_ERRORS::SetErrorCode(103, IniTxtFile.c_str());
 		return false;
 	}
 
@@ -87,7 +86,7 @@ bool	cWall::ReadPartialCoddedInfo(const std::string& IniTxtFile, const stColor& 
 	c3DPointI OrientV1, OrientV2;
 	if (!ReadIniFile(IniTxtFile, OrientV1, OrientV2))
 	{
-		FACADE_ERRORS::SetErrorCode(103);
+		FACADE_ERRORS::SetErrorCode(103, IniTxtFile.c_str());
 		return false;
 	}
 
@@ -150,7 +149,16 @@ void		cWall::FindNextWall(unsigned iCurrentWall, std::vector< cWall*>& Walls)
 				m_pNext = Walls[i];
 				Walls[i]->SetPreviousWall(this);
 			}
+			else
+			{
+				FACADE_ERRORS::SetErrorCode(200, m_RasterColor, 0);
+				FACADE_ERRORS::DisplayErrorMessage();
+			}
 			break;
+		}
+		else
+		{
+			FACADE_ERRORS::DisplayWarningMessage("W201");
 		}
 	}
 }
@@ -197,8 +205,11 @@ bool cWall::LoadFromCoddedBitmap( cRGBImage& Image, const stColor& RasterColor
 	c3DPointD TransformedRasterPt2 = m_CS/RasterPt2;
 
 	c2DPointI RasterPixPt1, RasterPixPt2;
-	if(!FindRasters(Image, RasterColor, TransformedRasterPt1, TransformedRasterPt2, RasterPixPt1, RasterPixPt2))
+	if (!FindRasters(Image, RasterColor, TransformedRasterPt1, TransformedRasterPt2, RasterPixPt1, RasterPixPt2))
+	{
+		FACADE_ERRORS::SetErrorCode(202, RasterColor, GetBitmapName().c_str() );
 		return false;
+	}
 	Set3DCSTranslationAndScale(RasterPt1, RasterPt2, RasterPixPt1, RasterPixPt2);
 	
 	if (pMinPixPt)
@@ -370,9 +381,6 @@ bool	cWall::FindRasters(const cRGBImage& Image, const stColor& RasterColor
 												, const c3DPointD& MinRasterPt, const c3DPointD& MaxRasterPt
 												, c2DPointI& MinPixPt, c2DPointI& MaxPixPt)
 {
-	if (Image.GetImageSize() < 1)
-		return false;
-
 	MinPixPt = { -1,-1 };
 	MaxPixPt = { -1,-1 };
 
@@ -432,6 +440,11 @@ bool	cWall::FindRasters(const cRGBImage& Image, const stColor& RasterColor
 				break;
 			}
 		}
+	}
+
+	if (m_iPixYEnd == -1 || m_iPixXEnd == -1 || m_iPixYStart == -1 || m_iPixXStart == -1)
+	{
+		return false;
 	}
 
 	{//calculate raster
@@ -517,7 +530,8 @@ bool	cWall::FindRasters(const cRGBImage& Image, const stColor& RasterColor
 			_ASSERT(false);//TODO 
 		}
 
-		_ASSERT(MaxPixPt.x >= 0 && MaxPixPt.y >= 0 && MinPixPt.x >= 0 && MinPixPt.y >= 0);
+		if (MaxPixPt.x == MinPixPt.x && MaxPixPt.y == MinPixPt.y)
+			return false;
 	}
 	return true;
 }
@@ -891,7 +905,7 @@ void	cWall::CalculatePanels(int iPanelsWidth, double dTolRemaining)
 	}
 }
 
-bool	cWall::ExportToRhinoScript(std::string& szOutputDir, int iPanelsWidth)
+bool	cWall::ExportToRhinoScript(std::string& szOutputDir, float fPanelThickness)
 {
 	std::string	Fn = GetRinoScriptName(szOutputDir);
 	cRhinoScriptFile Rfile(Fn);
@@ -903,35 +917,38 @@ bool	cWall::ExportToRhinoScript(std::string& szOutputDir, int iPanelsWidth)
 
 	double dEdgeLength;
 	c3DPointI Edges[6];
+	bool bOk = true;
 	for (int i = 0; i < m_Rows.size(); ++i)
 	{
 		if (m_Rows[i].CheckPanelType(0, LD) && m_pPrev)
 		{
 			if (m_pPrev->GetRow(m_Rows[i].GetIndex()) && m_pPrev->GetRow(m_Rows[i].GetIndex())->Get3DEdgePanelLength(dEdgeLength) )
-				if (m_Rows[i].Get3DEdgePanelPoints(true, iPanelsWidth, m_CS, dEdgeLength, Edges))
+				if (m_Rows[i].Get3DEdgePanelPoints(true, fPanelThickness, m_CS, dEdgeLength, Edges))
 				{
-					Rfile.WriteEdgePanel(Edges, m_Rows[i].GetHeight());
+					bOk = Rfile.WriteEdgePanel(Edges, m_Rows[i].GetPanelWidth(0), dEdgeLength, m_Rows[i].GetHeight(), fPanelThickness) && bOk;
 				}
 		}
 		else if (m_Rows[i].CheckPanelType(0, PDF))
 		{
-			if (m_Rows[i].Get3DFlatPanelPoints(0, iPanelsWidth, m_CS, Edges[0], Edges[1], Edges[3], Edges[2]))
+			if (m_Rows[i].Get3DFlatPanelPoints(0, fPanelThickness, m_CS, Edges[0], Edges[1], Edges[3], Edges[2]))
 			{
-				Rfile.WriteFlatPanel(Edges);
+				bOk = Rfile.WriteFlatPanel(Edges, m_Rows[i].GetPanelWidth(0), m_Rows[i].GetHeight(), fPanelThickness) && bOk;
 			}
 		}
 
 		for(unsigned j=1; j< m_Rows[i].GetNumPanels(); ++j)
 			if (m_Rows[i].CheckPanelType(j, PDF))
 			{
-				if (m_Rows[i].Get3DFlatPanelPoints(j, iPanelsWidth, m_CS, Edges[0], Edges[1], Edges[3], Edges[2]))
+				if (m_Rows[i].Get3DFlatPanelPoints(j, fPanelThickness, m_CS, Edges[0], Edges[1], Edges[3], Edges[2]))
 				{
-					Rfile.WriteFlatPanel(Edges);
+					bOk = Rfile.WriteFlatPanel(Edges,m_Rows[i].GetPanelWidth(j), m_Rows[i].GetHeight(), fPanelThickness) && bOk;
 				}
 			}
 			
 	}
-	return true;
+	if(!bOk)
+		FACADE_ERRORS::SetErrorCode(105, Fn.c_str());
+	return bOk;
 }
 
 const cRow*	cWall::GetRow(unsigned ind)const

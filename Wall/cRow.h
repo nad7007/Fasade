@@ -79,6 +79,12 @@ public:
 	double GetHeight() const	{
 		return m_dHeight;
 	}
+	double GetPanelWidth(int iPanelInd) const
+	{
+		_ASSERT(iPanelInd < m_Panels.size());
+		return m_Panels[iPanelInd]->GetLength();
+	}
+		
 	bool CheckPanelType(unsigned iPanelIndex, PanelType panelType) {
 		_ASSERT(iPanelIndex < m_Panels.size());
 		return m_Panels[iPanelIndex]->GetType() == panelType;
